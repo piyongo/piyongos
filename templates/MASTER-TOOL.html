@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>Master Tool Template - Piyongo</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+New&family=Inter:wght@400;700;900&family=Patrick+Hand&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/design-system.css">
+    
+    <script>
+        window.PAGE_CONFIG = {
+            id: 'tool-template', // YENİ TOOL İÇİN BENZERSİZ ID VER (örn: 'salary-calc')
+            type: 'tool',        
+            name: 'Master Template',
+            version: '10.0.0'
+        };
+    </script>
+
+    <style>
+        /* Radio Button Özelleştirmesi */
+        .radio-input:checked + .radio-label {
+            background-color: #000;
+            color: #fff;
+            border-color: #000;
+        }
+        /* Dropdown Ok İşareti */
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.2em;
+        }
+        /* Toggle Switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #FF4F00;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #FF4F00;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[#f5f5f5] text-black font-sans flex flex-col">
+
+    <script src="../js/config.js"></script>
+    <script src="../js/translations.js"></script>
+    <script src="../js/components.js"></script>
+
+    <main id="main" class="flex-grow max-w-7xl mx-auto px-4 pb-24 w-full pt-4">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+            
+            <div class="max-w-3xl">
+                <h1 class="text-4xl md:text-5xl font-bold tracking-tighter mb-3" data-i18n="tools.example_title">
+                    Tool Name
+                </h1>
+                <p class="text-neutral-600 font-mono text-lg leading-relaxed" data-i18n="tools.example_desc">
+                    Short description of what this tool does.
+                </p>
+            </div>
+            
+            <div class="flex items-center gap-4 shrink-0">
+                <button id="toolFavBtn" class="group p-2 border-2 border-transparent hover:border-black/5 rounded-full transition-all" title="Add to Favorites">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-black transition-all duration-300">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                </button>
+                <div id="tool-coffee-placeholder" class="transition-transform hover:scale-105"></div>
+            </div>
+
+        </div>
+
+        <div class="bg-white border-2 border-black p-6 md:p-8 shadow-[6px_6px_0px_0px_#000000]">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                
+                <div class="col-span-1 md:col-span-2">
+                    <label class="block font-bold mb-2 font-mono text-sm uppercase tracking-wider flex justify-between" data-i18n="ui.input_label">
+                        Input Content
+                    </label>
+                    <textarea id="inputArea" rows="4" 
+                        class="w-full bg-neutral-50 border-2 border-black p-4 font-mono text-base focus:outline-none focus:border-[#FF4F00] focus:shadow-[4px_4px_0px_0px_#FF4F00] transition-all placeholder-neutral-400" 
+                        data-i18n-placeholder="ui.input_placeholder"
+                        placeholder="Type or paste content..."></textarea>
+                    <div class="flex justify-end mt-1">
+                        <span id="inputStats" class="text-xs font-mono text-neutral-400"></span>
+                    </div>
+                </div>
+
+                <div class="col-span-1">
+                    <label class="block font-bold mb-2 font-mono text-sm uppercase tracking-wider">
+                        Numeric Value
+                    </label>
+                    <input type="number" id="numericInput" 
+                        class="w-full bg-neutral-50 border-2 border-black p-3 font-mono text-base focus:outline-none focus:shadow-[4px_4px_0px_0px_#FF4F00] transition-all"
+                        placeholder="e.g. 1984">
+                </div>
+
+                <div class="col-span-1">
+                    <label class="block font-bold mb-2 font-mono text-sm uppercase tracking-wider" data-i18n="ui.select_option">
+                        Select Option
+                    </label>
+                    <div class="relative">
+                        <select id="optionSelect" class="custom-select w-full bg-white border-2 border-black p-3 font-mono text-base focus:outline-none focus:shadow-[4px_4px_0px_0px_#FF4F00] transition-all cursor-pointer">
+                            <option value="opt1" data-i18n="ui.opt_default">Option One (Default)</option>
+                            <option value="opt2" data-i18n="ui.opt_alt">Option Two (Alternative)</option>
+                            <option value="opt3" data-i18n="ui.opt_complex">Option Three (Complex)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-span-1">
+                    <label class="block font-bold mb-2 font-mono text-sm uppercase tracking-wider" data-i18n="ui.mode_selection">
+                        Mode Selection
+                    </label>
+                    <div class="flex w-full">
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="mode" value="simple" class="radio-input hidden" checked>
+                            <div class="radio-label border-2 border-black border-r-0 py-3 text-center font-bold text-sm hover:bg-neutral-100 transition-colors" data-i18n="ui.mode_simple">
+                                SIMPLE
+                            </div>
+                        </label>
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="mode" value="advanced" class="radio-input hidden">
+                            <div class="radio-label border-2 border-black py-3 text-center font-bold text-sm hover:bg-neutral-100 transition-colors" data-i18n="ui.mode_advanced">
+                                ADVANCED
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-span-1 flex items-center justify-between border-2 border-neutral-200 p-3 bg-neutral-50 h-[52px]">
+                    <span class="font-bold font-mono text-sm uppercase">Enable Auto-Fix</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggleInput" class="sr-only peer">
+                        <div class="w-11 h-6 bg-neutral-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-black rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF4F00]"></div>
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="flex flex-wrap gap-4 mb-8">
+                <button id="actionBtn" class="bg-black text-white px-8 py-4 font-bold uppercase tracking-wider hover:bg-[#FF4F00] hover:shadow-[4px_4px_0px_0px_#000] transition-all transform hover:-translate-y-1 active:translate-y-0 text-base flex-grow md:flex-grow-0" data-i18n="ui.btn_process">
+                    Process Action
+                </button>
+                
+                <button onclick="clearAll()" class="px-6 py-4 font-bold uppercase tracking-wider border-2 border-black hover:bg-neutral-100 transition-all text-base" data-i18n="ui.btn_clear">
+                    Clear
+                </button>
+            </div>
+
+            <div id="resultsSection" class="hidden animate-fade-in pt-4 border-t-2 border-dashed border-neutral-200">
+                <h3 class="font-bold text-xl uppercase tracking-tight mb-4 flex items-center gap-2">
+                    <span class="w-3 h-3 bg-[#FF4F00] rounded-full animate-pulse"></span>
+                    <span data-i18n="ui.result_label">Results</span>
+                </h3>
+                
+                <div class="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
+                    <div id="resultsContent" class="bg-neutral-100 p-6 font-mono text-base md:text-lg whitespace-pre-wrap leading-relaxed select-all min-h-[100px]"></div>
+                    
+                    <button onclick="copyResults()" class="w-full bg-black text-white font-bold uppercase tracking-widest py-4 hover:bg-[#FF4F00] transition-colors flex items-center justify-center gap-3 group border-t-2 border-black relative overflow-hidden">
+                        <svg class="w-6 h-6 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span class="text-lg group-hover:translate-x-1 transition-transform" data-i18n="ui.btn_copy">Copy to Clipboard</span>
+                        <div id="copyOverlay" class="absolute inset-0 bg-[#FF4F00] flex items-center justify-center translate-y-full transition-transform duration-200">
+                            <span class="text-white text-lg font-black tracking-widest" data-i18n="ui.msg_copied">COPIED!</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-16 text-center pb-8">
+            <a href="mailto:hello@piyongo.com?subject=Tool%20Request" class="inline-block font-mono text-neutral-500 hover:text-[#FF4F00] transition-colors border-b border-transparent hover:border-[#FF4F00]" data-i18n="ui.req_link">
+                Need a specific tool?
+            </a>
+        </div>
+
+    </main>
+
+    <script>
+        // 1. SİSTEM BAŞLATMA (DOKUNMA)
+        document.addEventListener('DOMContentLoaded', () => {
+            const placeholder = document.getElementById('tool-coffee-placeholder');
+            if (placeholder && typeof getCoffeeButtonHTML === 'function') {
+                placeholder.innerHTML = getCoffeeButtonHTML();
+            }
+            if(typeof initLanguageSystem === 'function') initLanguageSystem();
+        });
+
+        // 2. ELEMENTLERİ SEÇME
+        // (Sayfada kullandığın inputların ID'lerini buraya ekle)
+        const inputArea = document.getElementById('inputArea');
+        const numericInput = document.getElementById('numericInput');
+        const optionSelect = document.getElementById('optionSelect'); 
+        const toggleInput = document.getElementById('toggleInput');
+        const modeRadios = document.getElementsByName('mode');  
+        
+        const actionBtn = document.getElementById('actionBtn');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsContent = document.getElementById('resultsContent');
+        const inputStats = document.getElementById('inputStats');      
+
+        // 3. CANLI İSTATİSTİK (Varsa)
+        if(inputArea) {
+            inputArea.addEventListener('input', (e) => {
+                if(inputStats) inputStats.textContent = `${e.target.value.length} chars`;
+            });
+        }
+
+        // 4. TEMİZLEME FONKSİYONU
+        function clearAll() {
+            if(inputArea) inputArea.value = '';
+            if(numericInput) numericInput.value = '';
+            if(resultsSection) resultsSection.classList.add('hidden');
+            if(inputStats) inputStats.textContent = '';
+            // Varsayılan odağı ayarla
+            if(inputArea) inputArea.focus();
+        }
+
+        // 5. İŞLEM MANTIĞI (TOOL LOGIC) - BURAYI DEĞİŞTİR
+        if(actionBtn) {
+            actionBtn.addEventListener('click', () => {
+                // Verileri al
+                const text = inputArea ? inputArea.value : '';
+                const number = numericInput ? numericInput.value : 0;
+                
+                // Hangi Mod?
+                let selectedMode = 'simple';
+                if(modeRadios.length > 0) {
+                    for(const radio of modeRadios) { if(radio.checked) selectedMode = radio.value; }
+                }
+
+                // Boş kontrolü (Textarea varsa)
+                if (inputArea && !text.trim()) {
+                    inputArea.classList.add('border-red-500'); 
+                    setTimeout(() => inputArea.classList.remove('border-red-500'), 500);
+                    return;
+                }
+
+                // --- [HESAPLAMA ALANI BAŞLANGICI] ---
+                let output = `RESULT PREVIEW:\n`;
+                output += `----------------\n`;
+                output += `Text: ${text}\n`;
+                output += `Number: ${number}\n`;
+                output += `Mode: ${selectedMode}\n`;
+                output += `Option: ${optionSelect ? optionSelect.value : 'none'}\n`;
+                output += `Auto-Fix: ${toggleInput && toggleInput.checked ? 'ON' : 'OFF'}`;
+                // --- [HESAPLAMA ALANI BİTİŞİ] ---
+
+                // Sonucu yazdır ve göster
+                resultsContent.textContent = output;
+                resultsSection.classList.remove('hidden');
+                resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+        }
+
+        // 6. KOPYALAMA FONKSİYONU
+        function copyResults() {
+            const text = resultsContent.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const overlay = document.getElementById('copyOverlay');
+                overlay.classList.remove('translate-y-full');
+                setTimeout(() => overlay.classList.add('translate-y-full'), 1500);
+            });
+        }
+    </script>
+
+</body>
+</html>

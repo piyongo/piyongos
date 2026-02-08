@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>Piyongo - The Digital Workbench</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Courier+New&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        window.PAGE_CONFIG = { id: 'index', type: 'marketing', name: 'Home' };
+    </script>
+</head>
+<body class="min-h-screen bg-[#f5f5f5] text-black font-sans flex flex-col">
+
+    <script src="js/config.js"></script>
+    <script src="js/translations.js"></script>
+    <script src="js/components.js"></script>
+
+    <main class="flex-grow max-w-6xl mx-auto px-6 w-full pb-16">
+        
+       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 pt-2">
+    <div class="max-w-full md:max-w-xl">
+        <p class="text-base md:text-xl text-neutral-500 font-mono leading-relaxed" data-i18n="common.footer_desc">
+            Detailed guides, calculators, smart tools. All in one place. Completely free.
+        </p>
+    </div>
+    <div id="coffee-btn-placeholder" class="w-full md:w-auto shrink-0"></div>
+</div>
+
+        <div class="mb-10 space-y-4">
+            <div class="relative w-full md:max-w-xl group">
+                <div class="absolute inset-y-0 left-0 pl-4 md:pl-6 flex items-center pointer-events-none">
+                    <svg class="w-5 h-5 md:w-6 md:h-6 text-neutral-400 group-focus-within:text-[#FF4F00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </div>
+                <input type="text" id="searchInput" 
+                    class="block w-full h-12 md:h-14 pl-12 pr-4 md:pl-16 md:pr-6 bg-white border-2 border-black rounded-[20px] md:rounded-[24px] text-base md:text-xl font-mono placeholder-neutral-300 focus:outline-none focus:border-[#FF4F00]"
+                    data-i18n-placeholder="common.search_placeholder"
+                    placeholder="Search">
+            </div>
+
+            <div class="flex overflow-x-auto hide-scrollbar gap-2 pb-2 md:flex-wrap" id="filterContainer">
+                <button onclick="filterTools('ALL')" class="filter-btn active border-2 border-transparent px-4 py-1.5 rounded-full font-bold font-mono text-xs md:text-sm uppercase tracking-wider shrink-0" data-i18n="ui.tag_ALL">ALL</button>
+                <button onclick="filterTools('FAVS')" class="filter-btn border-2 border-transparent px-4 py-1.5 rounded-full font-bold font-mono text-xs md:text-sm uppercase tracking-wider text-neutral-500 shrink-0" data-i18n="ui.tag_FAVS">FAVS</button>
+                <button onclick="filterTools('TEXT')" class="filter-btn border-2 border-transparent px-4 py-1.5 rounded-full font-bold font-mono text-xs md:text-sm uppercase tracking-wider text-neutral-500 shrink-0" data-i18n="ui.tag_TEXT">TEXT</button>
+                <button onclick="filterTools('FORMAT')" class="filter-btn border-2 border-transparent px-4 py-1.5 rounded-full font-bold font-mono text-xs md:text-sm uppercase tracking-wider text-neutral-500 shrink-0" data-i18n="ui.tag_FORMAT">FORMAT</button>
+                <button onclick="filterTools('GENERATE')" class="filter-btn border-2 border-transparent px-4 py-1.5 rounded-full font-bold font-mono text-xs md:text-sm uppercase tracking-wider text-neutral-500 shrink-0" data-i18n="ui.tag_GENERATE">GENERATE</button>
+            </div>
+        </div>
+
+        <div id="toolsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 auto-rows-fr"></div>
+        <div id="noResults" class="hidden text-center py-12 md:py-24"><p class="font-mono text-lg text-neutral-400">NO TOOLS FOUND</p></div>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => { renderTools(); });
+
+        const toolsData = [
+            { id: 'character-counter', link: 'tools/character-counter.html', titleKey: 'tools.char_title', descKey: 'tools.char_desc', tag: 'TEXT' },
+            { id: 'case-converter', link: 'tools/case-converter.html', titleKey: 'tools.case_title', descKey: 'tools.case_desc', tag: 'TEXT' },
+            { id: 'list-fixer', link: 'tools/list-fixer.html', titleKey: 'tools.line_title', descKey: 'tools.line_desc', tag: 'FORMAT' },
+            { id: 'text-cleaner', link: 'tools/line-cleaner.html', titleKey: 'tools.clean_title', descKey: 'tools.clean_desc', tag: 'TEXT' },
+            { id: 'lorem-ipsum', link: 'tools/lorem-ipsum.html', titleKey: 'tools.lorem_title', descKey: 'tools.lorem_desc', tag: 'GENERATE' },
+            { id: 'style-remover', link: 'tools/style-remover.html', titleKey: 'tools.style_title', descKey: 'tools.style_desc', tag: 'TEXT' },
+            { id: 'portavisa', link: 'products/portavisa.html', titleKey: 'tools.portavisa_title', descKey: 'tools.portavisa_desc', tag: 'PRODUCT', featured: true }
+        ];
+
+        const grid = document.getElementById('toolsGrid');
+        const searchInput = document.getElementById('searchInput');
+        let currentFilter = 'ALL';
+
+        function getFavorites() { try { return JSON.parse(localStorage.getItem('piyongo_favs') || '[]'); } catch (e) { return []; } }
+        function getInitials(title) {
+            const stopWords = ['de', 'da', 'do', 'dos', 'das', 'e', 'of', 'the', 'and', 'for', 'tool', 'tools'];
+            const words = title.split(' ').filter(w => !stopWords.includes(w.toLowerCase()));
+            if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
+            if (words.length === 1) return words[0].substring(0, 2).toUpperCase();
+            return "TL";
+        }
+
+        function filterTools(category) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                const btnKey = btn.getAttribute('data-i18n').split('_').pop(); 
+                if(btnKey === category) {
+                    btn.classList.add('active', 'text-black'); btn.classList.remove('text-neutral-500');
+                } else {
+                    btn.classList.remove('active', 'text-black'); btn.classList.add('text-neutral-500');
+                }
+            });
+            renderTools(searchInput.value);
+        }
+
+        function renderTools(searchText = '') {
+            grid.innerHTML = '';
+            let visibleCount = 0;
+            const favorites = getFavorites();
+
+            toolsData.forEach(tool => {
+                const title = (typeof t === 'function') ? t('tools', tool.titleKey.split('.')[1]) : 'Tool';
+                const desc = (typeof t === 'function') ? t('tools', tool.descKey.split('.')[1]) : '';
+                let translatedTag = tool.tag;
+                try {
+                    const lang = localStorage.getItem('userLang') || 'en';
+                    if(TRANSLATIONS.ui[lang] && TRANSLATIONS.ui[lang]['tag_' + tool.tag]) {
+                        translatedTag = TRANSLATIONS.ui[lang]['tag_' + tool.tag];
+                    }
+                } catch(e) { translatedTag = tool.tag; }
+
+                // UPDATED: Use 'PV' for Porta Visa, otherwise initials
+                const generatedIcon = tool.id === 'portavisa' ? 'PV' : getInitials(title);
+                
+                const matchesSearch = title.toLowerCase().includes(searchText.toLowerCase()) || desc.toLowerCase().includes(searchText.toLowerCase());
+                
+                let matchesCategory = false;
+                if(currentFilter === 'ALL') matchesCategory = true;
+                else if(currentFilter === 'FAVS') matchesCategory = favorites.includes(tool.id);
+                else matchesCategory = tool.tag === currentFilter;
+
+                if(matchesSearch && matchesCategory) {
+                    const card = document.createElement('a');
+                    card.href = tool.link;
+                    const isFeatured = tool.featured;
+                    const isProduct = tool.tag === 'PRODUCT';
+                    
+                    const gridSpan = isFeatured ? 'md:col-span-2 bg-white text-black border-black featured' : 'bg-white text-black border-black';
+                    
+                    // ICON BG: Standard Neutral Gray (Turns Orange via CSS on hover now)
+                    const iconBg = 'bg-neutral-100 text-black border-2 border-transparent';
+                    
+                    const tagBase = 'bg-black/5 text-neutral-500';
+
+                    card.className = `tool-card ${isProduct ? 'product-card' : ''} group relative flex flex-col justify-between p-5 md:p-6 border-2 rounded-2xl md:rounded-[32px] overflow-hidden h-full ${gridSpan}`;
+                    
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-6 gap-4">
+                            <div class="flex-grow min-w-0 pr-2">
+                                <h3 class="text-xl md:text-2xl font-bold tracking-tight mb-2 md:mb-3 truncate transition-colors leading-none">${title}</h3>
+                                <p class="font-mono text-xs md:text-sm opacity-60 line-clamp-2 leading-relaxed max-w-[95%]">${desc}</p>
+                            </div>
+                            <div class="arrow-icon flex-shrink-0 pt-1">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-end mt-auto gap-4">
+                            <span class="inline-block px-3 py-1.5 rounded-lg text-[10px] font-bold font-mono tracking-widest uppercase ${tagBase}">${translatedTag}</span>
+                            <div class="card-icon-box w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-base md:text-lg font-bold font-mono transition-colors duration-300 ${iconBg}">${generatedIcon}</div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                    visibleCount++;
+                }
+            });
+
+            const noRes = document.getElementById('noResults');
+            if(noRes) visibleCount === 0 ? noRes.classList.remove('hidden') : noRes.classList.add('hidden');
+        }
+
+        searchInput.addEventListener('input', (e) => renderTools(e.target.value));
+    </script>
+</body>
+</html>

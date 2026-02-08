@@ -1,0 +1,233 @@
+/* design-system.css - PIYONGO CORE v2.4 (FULL RESTORE) */
+
+/* 1. IMPORTS & VARS */
+/* Bold (700) ve Black (900) eklendi */
+@import url('https://fonts.googleapis.com/css2?family=Courier+New&family=Inter:wght@400;700;900&family=Patrick+Hand&display=swap');
+
+:root {
+    --font-mono: 'Courier New', Courier, monospace;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-hand: 'Patrick Hand', cursive;
+    --color-primary: #FF4F00;
+    --color-black: #000000;
+    --color-white: #FFFFFF;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: #f5f5f5;
+    color: var(--color-black);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- SEARCH BAR --- */
+.search-input {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid #000 !important; 
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+.search-input:focus {
+    outline: none !important;
+    border-color: #FF4F00 !important;
+    background-color: #fff !important;
+    box-shadow: 6px 6px 0px 0px #FF4F00 !important; 
+}
+
+/* --- CARDS LAYOUT --- */
+.dashboard-card {
+    background: #fff; border: 2px solid #000;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column; justify-content: space-between;
+    cursor: pointer; overflow: hidden; position: relative; box-shadow: none;
+}
+.dashboard-card:hover { 
+    transform: translateY(-4px); 
+    box-shadow: 6px 6px 0px 0px #000000 !important; 
+}
+.dashboard-card:hover h3 { color: var(--color-primary); }
+.dashboard-card.hidden-result { display: none !important; }
+
+/* --- FAV INDICATOR (HEART) --- */
+.fav-indicator { 
+    color: #000; 
+    transition: color 0.1s ease !important; 
+    display: flex; align-items: center; justify-content: center; 
+}
+.fav-indicator svg { 
+    fill: transparent; stroke: currentColor; stroke-width: 2px; 
+    transition: all 0.1s ease !important; 
+}
+.dashboard-card:hover .fav-indicator { color: #FF4F00 !important; }
+.fav-indicator.active svg { fill: #FF4F00 !important; stroke: #FF4F00 !important; }
+
+/* 1. Hamburger menü butonunu ve varsa yanındaki linkleri gizle */
+header nav, 
+header button:has(svg line),
+header button svg path[d*="M3"], 
+header .md\:hidden { 
+    display: none !important; 
+}
+
+/* 1. Header Kapsayıcısını Hizala */
+header .max-w-6xl {
+    /* Alttaki tool kutusuyla aynı genişlik ve padding */
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    
+    /* Elemanları uçlara it */
+    display: flex !important;
+    justify-content: space-between !important; 
+    align-items: center !important;
+}
+
+/* 2. Logoyu Alttaki Başlığa Hizalamak İçin (Az Sağa Taşıma) */
+header a[href*="index.html"] {
+    /* Eğer başlıkla tam hizalanmıyorsa bu değeri artırabilirsin */
+    margin-left: 72px !important; 
+}
+
+/* 3. Dil Seçiciyi Alttaki Butona Hizalamak İçin (Az Sola Taşıma) */
+#languageSwitcher {
+    /* Sağdaki boşluğu sıfırlayıp gerekirse sola doğru itiyoruz */
+    margin-right: 72px !important;
+}
+
+/* Sadece TOOL sayfalarında çalışması için gövde etiketini kontrol ediyoruz */
+body:not(.marketing-page) header .max-w-6xl {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+/* Sadece TOOL sayfalarında hamburgeri gizle */
+body:not(.marketing-page) header nav, 
+body:not(.marketing-page) header button:has(svg line),
+body:not(.marketing-page) header .md\:hidden { 
+    display: none !important; 
+}
+
+/* Index sayfasındaki language switcher'ın yerini koruması için */
+#languageSwitcher {
+    position: relative;
+    z-index: 50;
+}
+
+
+
+/* =========================================
+   KINETIC ANIMATION SYSTEM (RESTORED)
+   ========================================= */
+.kinetic-stage {
+    height: 64px; background-color: #F5F5F5; border-radius: 6px; padding: 0 16px;
+    display: flex; align-items: center; justify-content: flex-start;
+    gap: 2px; margin-bottom: 12px; position: relative; 
+}
+
+/* UX Hint: HOVER TO PREVIEW (Tech Pulse) */
+.kinetic-stage::before {
+    content: "HOVER TO PREVIEW"; 
+    position: absolute; left: 0; right: 0; text-align: center; 
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; 
+    color: #9CA3AF; pointer-events: none; transition: opacity 0.2s ease;
+    animation: techPulse 3s infinite ease-in-out;
+}
+.dashboard-card:hover .kinetic-stage::before { opacity: 0; animation: none; }
+.dashboard-card:hover .kinetic-stage { background-color: #F0F0F0; }
+
+@keyframes techPulse { 
+    0%   { opacity: 0.6; color: #A3A3A3; } 
+    50%  { opacity: 1;   color: #000000; } 
+    100% { opacity: 0.6; color: #A3A3A3; } 
+}
+
+/* Kinetic Text Base */
+.kinetic-text {
+    font-family: var(--font-mono); font-size: 19px; font-weight: 700;
+    line-height: 1.5; letter-spacing: -0.02em; color: #A3A3A3;
+    white-space: nowrap; position: relative; clip-path: inset(0 100% 0 0); 
+}
+/* Master Wipe Effect */
+.dashboard-card:hover .kinetic-text { animation: masterWipe 4s infinite cubic-bezier(0.8, 0, 0.2, 1); }
+
+@keyframes masterWipe { 
+    0% { clip-path: inset(0 100% 0 0); } 10% { clip-path: inset(0 0 0 0); } 
+    30% { clip-path: inset(0 0 0 0); } 40% { clip-path: inset(0 100% 0 0); } 
+    50% { clip-path: inset(0 100% 0 0); } 60% { clip-path: inset(0 0 0 0); } 
+    90% { clip-path: inset(0 0 0 0); } 100% { clip-path: inset(0 100% 0 0); } 
+}
+
+/* Cursor */
+.kinetic-cursor { display: block; width: 10px; height: 24px; background-color: var(--color-primary); opacity: 0; margin-left: 4px; }
+.dashboard-card:hover .kinetic-cursor { opacity: 1; animation: blink 0.8s infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+/* --- INDIVIDUAL TOOL ANIMATIONS (MISSING ONES ADDED BACK) --- */
+
+/* 1. Char Counter */
+.dashboard-card:hover .anim-counter::after { content: "Hello I am Piyongo"; animation: contentCounter 4s infinite steps(1); }
+@keyframes contentCounter { 0% { content: "Hello I am Piyongo"; color: #A3A3A3; } 50% { content: "18 characters"; color: #000; } }
+
+/* 2. Case Converter */
+.dashboard-card:hover .anim-case::after { content: "hello i am piyongo"; animation: contentCase 4s infinite steps(1); }
+@keyframes contentCase { 0% { content: "hello i am piyongo"; color: #A3A3A3; } 50% { content: "HELLO I AM PIYONGO"; color: #000; } }
+
+/* 3. Line Fixer */
+.dashboard-card:hover .anim-line::after { content: "Hello\A I am Piyongo"; white-space: pre; animation: contentLine 4s infinite steps(1); }
+@keyframes contentLine { 0% { content: "Hello\A I am Piyongo"; color: #A3A3A3; font-size: 15px; margin-top: -4px; line-height: 1.3; } 50% { content: "Hello, I am Piyongo"; color: #000; font-size: 19px; margin-top: 0; white-space: nowrap; } }
+
+/* 4. Text Cleaner */
+.dashboard-card:hover .anim-clean::after { content: "Hello, I  am, Piyongo"; animation: contentClean 4s infinite steps(1); }
+@keyframes contentClean { 0% { content: "Hello, I  am, Piyongo"; color: #A3A3A3; } 50% { content: "Hello I am Piyongo"; color: #000; } }
+
+/* 5. Lorem Ipsum */
+.dashboard-card:hover .anim-lorem::after { content: "Hello I am Piyongo"; animation: contentLorem 4s infinite steps(1); }
+@keyframes contentLorem { 0% { content: "Hello I am Piyongo"; color: #A3A3A3; } 50% { content: "Let's create magic"; color: #000; } }
+
+/* 6. Style Remover */
+.dashboard-card:hover .anim-style::after { content: "Hello I am Piyongo"; animation: contentStyle 4s infinite steps(1); }
+@keyframes contentStyle { 0% { content: "Hello I am Piyongo"; color: #A3A3A3; font-style: italic; text-decoration: underline; } 50% { content: "Hello I am Piyongo"; color: #000; font-style: normal; text-decoration: none; } }
+
+/* === PORTAVISA ANIMATION FIX === */
+/* steps(1) kullanımı sayesinde %50'de keskin geçiş yapar, karışmaz */
+.dashboard-card:hover .anim-guide::after { 
+    content: "Q: NIF?"; 
+    animation: contentGuide 6s infinite steps(1); 
+}
+@keyframes contentGuide { 
+    0%   { content: "Q: How to get NIF?"; color: #A3A3A3; } /* Gri Soru (0-49%) */
+    50%  { content: "A: Online or Finanças."; color: #000000; } /* Siyah Cevap (50-100%) */
+}
+
+/* --- SIDEBAR & MENU --- */
+.command-sidebar {
+    position: fixed; top: 0; left: 0; height: 100vh; width: 100%; max-width: 340px;
+    background: #FFFEFA; z-index: 9999; transform: translateX(-100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border-right: 6px solid #000; display: flex; flex-direction: column;
+}
+.command-sidebar.active { transform: translateX(0); }
+.menu-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(4px);
+    z-index: 9998; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+}
+.menu-overlay.active { opacity: 1; visibility: visible; }
+
+/* --- COFFEE BUTTON --- */
+.btn-coffee-inviting {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 12px 24px; background-color: var(--color-primary);
+    border: 2px solid #000; color: #fff;
+    font-family: var(--font-hand); font-size: 1.4rem; font-weight: 900;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    text-decoration: none; transition: all 0.2s ease;
+    box-shadow: 4px 4px 0px 0px #000; line-height: 1;
+}
+.btn-coffee-inviting:hover {
+    transform: translateY(-2px); box-shadow: 6px 6px 0px 0px #000;
+    background-color: #ff5f1a;
+}
+.btn-coffee-inviting svg { width: 26px; height: 26px; }

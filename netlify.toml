@@ -1,0 +1,109 @@
+# netlify.toml - PIYONGO PRODUCTION CONFIG
+
+# Build Settings (Static site, no build process)
+[build]
+  publish = "."
+  
+# ============================================
+# DOMAIN & HTTPS REDIRECTS
+# ============================================
+
+# Force HTTPS (Security)
+[[redirects]]
+  from = "http://piyongo.com/*"
+  to = "https://piyongo.com/:splat"
+  status = 301
+  force = true
+
+# Redirect Netlify subdomain to primary domain (SEO)
+[[redirects]]
+  from = "https://piyongo.netlify.app/*"
+  to = "https://piyongo.com/:splat"
+  status = 301
+  force = true
+
+# Default route (homepage)
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+# Catch-all (SPA behavior)
+[[redirects]]
+  from = "/*"
+  to = "/:splat"
+  status = 200
+
+# ============================================
+# SECURITY HEADERS (Production Standard)
+# ============================================
+
+# HTML Pages - Maximum Security
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    # Prevent browsers from caching (always fresh content)
+    Cache-Control = "public, max-age=0, must-revalidate"
+    
+    # Security: Prevent clickjacking
+    X-Frame-Options = "DENY"
+    
+    # Security: Prevent MIME type sniffing
+    X-Content-Type-Options = "nosniff"
+    
+    # Security: Control referrer information
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # Security: XSS Protection
+    X-XSS-Protection = "1; mode=block"
+    
+    # Performance: DNS prefetch control
+    X-DNS-Prefetch-Control = "on"
+
+# JavaScript Files - Long-term Cache
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    # Cache for 1 year (immutable files)
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "application/javascript; charset=utf-8"
+
+# CSS Files - Long-term Cache
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    # Cache for 1 year (immutable files)
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "text/css; charset=utf-8"
+
+# Images - Long-term Cache
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ============================================
+# NOTES
+# ============================================
+# 
+# What this file does:
+# 
+# 1. HTTPS Force: All HTTP traffic → HTTPS (security)
+# 2. Domain Redirect: netlify.app → piyongo.com (SEO)
+# 3. Security Headers: Protect against XSS, clickjacking, etc.
+# 4. Cache Strategy: 
+#    - HTML: 0 seconds (always fresh)
+#    - CSS/JS: 1 year (performance)
+# 
+# No manual server config needed. This is "set and forget."
+# ============================================

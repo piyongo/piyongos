@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>Style Remover - Piyongo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Courier+New&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/design-system.css">
+    <script>window.PAGE_CONFIG = { id: 'style-remover', type: 'tool', name: 'Style Remover', version: '2.1.0' };</script>
+</head>
+<body class="min-h-screen bg-[#f5f5f5] text-black font-sans flex flex-col">
+    <script src="../js/config.js"></script><script src="../js/translations.js"></script><script src="../js/components.js"></script>
+    <main id="main" class="flex-grow max-w-6xl mx-auto px-6 pb-24 w-full pt-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+            <div class="max-w-3xl"><h1 class="text-4xl md:text-5xl font-bold tracking-tighter mb-3" data-i18n="tools.style_title">Style Remover</h1><p class="text-neutral-600 font-mono text-lg leading-relaxed" data-i18n="tools.style_desc">Clears bold, italic and other styles.</p></div>
+            <div class="flex items-center gap-4 shrink-0"><button id="favBtn" class="group p-2 border-2 border-transparent hover:border-black/5 rounded-full transition-all"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg></button> <a href="https://ko-fi.com/piyongo" target="_blank" 
+               class="hidden md:flex items-center gap-4 px-6 py-4 bg-[#FF4F00] text-white border-2 border-black rounded-2xl hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_0px_#000] active:translate-y-0 active:shadow-none transition-all mb-2 group">
+                <div class="w-8 h-8 group-hover:rotate-12 transition-transform duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+                        <path d="M38 12H90C96 12 100 18 100 24H28C28 18 32 12 38 12Z" stroke="currentColor" stroke-width="6" stroke-linejoin="round"></path>
+                        <path d="M26 30H102V38C102 42 98 46 92 46H36C30 46 26 42 26 38V30Z" stroke="currentColor" stroke-width="4" stroke-linejoin="round"></path>
+                        <path d="M36 48H92L86 112C86 116 82 118 78 118H50C46 118 42 116 42 112L36 48Z" stroke="currentColor" stroke-width="6" stroke-linejoin="round"></path>
+                        <path d="M36 70H92V98H42C38 98 36 96 36 92V70Z" fill="currentColor"></path>
+                    </svg>
+                </div>
+                <span class="font-cute text-xl tracking-wide pt-1" data-i18n="common.buyMeACoffee">Buy Me A Coffee</span>
+            </a>
+        </div></div>
+        </div>
+
+        <div class="bg-white border-2 border-black p-6 md:p-8 shadow-[6px_6px_0px_0px_#000000] rounded-[32px]">
+            <div class="mb-8">
+                <label class="block font-bold mb-3 font-mono text-sm uppercase tracking-wider pl-1" data-i18n="ui.input_label">WORKSPACE</label>
+                <textarea id="inputArea" rows="12" class="w-full bg-neutral-50 border-2 border-black p-6 font-mono text-lg transition-all duration-300 focus:outline-none focus:border-black rounded-2xl" data-i18n-placeholder="ui.input_placeholder"></textarea>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+                <button onclick="stripStyles()" class="border-2 border-black bg-white text-black px-6 py-3 font-bold text-xs md:text-sm uppercase hover:bg-black hover:text-white transition-all rounded-xl hover:translate-y-[-2px] active:translate-y-0" data-i18n="ui.btn_strip">STRIP HTML/FORMAT</button>
+                <div class="w-px h-8 bg-black/10 mx-2 hidden md:block"></div>
+                <button onclick="copyText()" class="bg-black text-white px-8 py-3 font-bold text-xs md:text-sm uppercase hover:bg-[#FF4F00] transition-all flex-grow md:flex-grow-0 rounded-xl hover:translate-y-[-2px] active:translate-y-0" data-i18n="ui.btn_copy">COPY RESULT</button>
+                <div id="copyOverlay" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-black text-white px-6 py-3 font-bold uppercase tracking-widest transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none z-50 shadow-[4px_4px_0px_0px_#FF4F00] rounded-xl"><span data-i18n="ui.msg_copied">COPIED!</span></div>
+                <button onclick="clearAll()" class="group flex items-center gap-2 p-3 text-neutral-400 hover:text-red-600 ml-auto transition-colors font-bold text-xs tracking-widest"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:-rotate-12 transition-transform duration-300 origin-center"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg><span data-i18n="ui.btn_clear" class="hidden md:inline">CLEAR</span></button>
+            </div>
+        </div>
+        
+    </main>
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', () => { const p = document.getElementById('tool-coffee-placeholder'); if(p) p.innerHTML = getCoffeeButtonHTML(); if(typeof initLanguageSystem === 'function') initLanguageSystem(); });
+        const inputArea = document.getElementById('inputArea');
+        function stripStyles() {
+            if(!inputArea.value) return;
+            flashEffect();
+            const temp = document.createElement("div"); temp.innerHTML = inputArea.value; inputArea.value = temp.textContent || temp.innerText || "";
+        }
+        function flashEffect() { inputArea.classList.add('border-[#FF4F00]', 'shadow-[0px_0px_15px_rgba(255,79,0,0.3)]'); setTimeout(() => { inputArea.classList.remove('border-[#FF4F00]', 'shadow-[0px_0px_15px_rgba(255,79,0,0.3)]'); }, 300); }
+        function clearAll() { inputArea.value = ''; inputArea.focus(); }
+        function copyText() { if(!inputArea.value) return; navigator.clipboard.writeText(inputArea.value).then(() => { const o = document.getElementById('copyOverlay'); o.classList.remove('translate-y-20', 'opacity-0'); setTimeout(() => o.classList.add('translate-y-20', 'opacity-0'), 2000); }); }
+    </script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>Product Name - Piyongo</title>
+    <meta name="description" content="Product description">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Design System -->
+    <link rel="stylesheet" href="../assets/css/design-system.css">
+    
+    <script>
+        window.PAGE_CONFIG = {
+            id: 'product-example',
+            type: 'product',
+            name: 'Product Name',
+            category: 'CATEGORY',
+            version: '1.0.0'
+        };
+    </script>
+    
+    <!-- Data (Replace with your content) -->
+    <script>
+        const PRODUCT_CONTENT = [
+            {
+                id: 1,
+                category: { en: 'Getting Started', tr: 'Başlangıç' },
+                tags: { en: ['basics', 'intro'], tr: ['temel', 'giriş'] },
+                title_en: 'Article Title',
+                title_tr: 'Makale Başlığı',
+                source: 'Official Guide',
+                date: '2025-01-31',
+                content_en: `
+                    <p class="mb-4">Article content in English...</p>
+                `,
+                content_tr: `
+                    <p class="mb-4">Türkçe makale içeriği...</p>
+                `
+            }
+            // Add more articles...
+        ];
+    </script>
+</head>
+<body class="min-h-screen bg-neutral-50">
+    
+    <a href="#main" class="skip-to-main">Skip to main content</a>
+
+    <!-- Load Core -->
+    <script src="../config.js"></script>
+    <script src="../translations.js"></script>
+    <script src="../components.js"></script>
+
+    <!-- Language Switcher -->
+    <div class="max-w-7xl mx-auto px-4 pt-6 flex justify-end">
+        <div class="flex items-center gap-3 text-sm font-mono">
+            <button onclick="switchLanguage('en')" 
+                    class="lang-option flex items-center gap-2 transition-opacity hover:opacity-100" 
+                    data-lang="en"
+                    aria-label="Switch to English">
+                <span>🇬🇧</span>
+                <span>English</span>
+            </button>
+            <span class="text-neutral-300">|</span>
+            <button onclick="switchLanguage('tr')" 
+                    class="lang-option flex items-center gap-2 transition-opacity hover:opacity-100" 
+                    data-lang="tr"
+                    aria-label="Switch to Turkish">
+                <span>🇹🇷</span>
+                <span>Türkçe</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Frame -->
+    <main id="main" class="max-w-7xl mx-auto px-4 pt-8 pb-16 border-2 border-black mt-4 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+        
+        <!-- Header -->
+        <header class="pb-8 mb-12 border-b-2 border-black">
+            <div class="flex items-center gap-3 mb-4">
+                <a href="../index.html" class="text-neutral-500 hover:text-neutral-900 transition-colors text-xs uppercase tracking-wider">INDEX</a>
+                <span class="text-neutral-300">/</span>
+                <span class="text-neutral-400 text-xs uppercase tracking-wider">PRODUCT</span>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4">Product Name</h1>
+                    <p class="text-neutral-600 text-lg max-w-2xl" style="font-family: var(--font-sans);">
+                        Product description goes here
+                    </p>
+                </div>
+                
+                <div class="flex items-center gap-3 flex-shrink-0">
+                    <a href="https://ko-fi.com/portavisa" 
+                       target="_blank" 
+                       class="btn btn-primary">
+                        <span class="text-xl">☕</span>
+                        <span class="hidden sm:inline">BUY ME A BICA</span>
+                    </a>
+                    
+                    <a href="https://calendly.com/portavisa/30min" 
+                       target="_blank" 
+                       class="btn btn-secondary">
+                        <span class="text-xl">📅</span>
+                        <span class="hidden sm:inline">BOOK CONSULT</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search -->
+        <section class="mb-12">
+            <input 
+                type="text" 
+                id="searchInput"
+                class="w-full bg-neutral-50 border-2 border-black px-6 py-4 text-lg focus:outline-none focus:border-primary transition-colors font-mono"
+                placeholder="Search articles..."
+                aria-label="Search">
+        </section>
+
+        <!-- Layout -->
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- Sidebar -->
+            <aside class="lg:w-64 flex-shrink-0">
+                <nav class="lg:sticky lg:top-8">
+                    <h2 class="text-xs uppercase tracking-wider text-neutral-500 mb-4">Categories</h2>
+                    <div id="categoryList" class="space-y-2"></div>
+                </nav>
+            </aside>
+
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+                <div id="contentArea" class="space-y-8"></div>
+                <div id="emptyState" class="text-center py-24 hidden">
+                    <p class="text-neutral-400">No articles found</p>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer injected by components.js -->
+
+    <script>
+        // Same logic as portavisa.html - copy the entire script section
+        let currentCategory = 'all';
+        let currentLang = 'en';
+        let activeTag = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            currentLang = localStorage.getItem('user_lang') || 'en';
+            renderCategories();
+            renderContent();
+            
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                filterContent(e.target.value.toLowerCase());
+            });
+            
+            window.addEventListener('languageChanged', function(e) {
+                currentLang = e.detail.lang;
+                renderCategories();
+                renderContent();
+            });
+        });
+
+        function renderCategories() {
+            const cats = ['all', ...new Set(PRODUCT_CONTENT.map(item => item.category[currentLang]))];
+            document.getElementById('categoryList').innerHTML = cats.map(cat => {
+                const isActive = cat === currentCategory;
+                const label = cat === 'all' ? (currentLang === 'en' ? 'All' : 'Tümü') : cat;
+                return `
+                    <button 
+                        class="w-full text-left px-4 py-3 text-sm font-medium border-2 border-black transition-all ${isActive ? 'bg-black text-white' : 'bg-white hover:bg-neutral-50'}"
+                        onclick="selectCategory('${cat}')">
+                        ${label}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectCategory(cat) {
+            currentCategory = cat;
+            activeTag = null;
+            renderCategories();
+            renderContent();
+        }
+
+        function filterByTag(tag) {
+            activeTag = tag;
+            currentCategory = 'all';
+            renderCategories();
+            renderContent();
+        }
+
+        function renderContent(filtered = null) {
+            let data = filtered || (activeTag 
+                ? PRODUCT_CONTENT.filter(i => i.tags[currentLang].includes(activeTag))
+                : currentCategory === 'all' 
+                    ? PRODUCT_CONTENT 
+                    : PRODUCT_CONTENT.filter(i => i.category[currentLang] === currentCategory));
+
+            const container = document.getElementById('contentArea');
+            const empty = document.getElementById('emptyState');
+
+            if (data.length === 0) {
+                container.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+
+            empty.classList.add('hidden');
+            container.innerHTML = data.map(item => {
+                const title = currentLang === 'en' ? item.title_en : item.title_tr;
+                const content = currentLang === 'en' ? item.content_en : item.content_tr;
+                return `
+                    <article class="article-card">
+                        <div class="article-header">
+                            <span class="category-label">${item.category[currentLang]}</span>
+                            <div class="article-meta">
+                                <span><strong>SOURCE:</strong> ${item.source}</span>
+                                <span><strong>DATE:</strong> ${new Date(item.date).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-bold mb-6">${title}</h2>
+                        <div class="prose max-w-none" style="font-family: var(--font-sans);">${content}</div>
+                        <div class="article-footer">
+                            <div class="tags-wrapper">
+                                ${item.tags[currentLang].map(tag => `
+                                    <button onclick="filterByTag('${tag}')" class="tag-text">#${tag}</button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function filterContent(query) {
+            if (!query) {
+                renderContent();
+                return;
+            }
+            const filtered = PRODUCT_CONTENT.filter(item => {
+                const title = currentLang === 'en' ? item.title_en : item.title_tr;
+                const content = currentLang === 'en' ? item.content_en : item.content_tr;
+                return title.toLowerCase().includes(query) || content.toLowerCase().includes(query);
+            });
+            renderContent(filtered);
+        }
+
+        window.selectCategory = selectCategory;
+        window.filterByTag = filterByTag;
+    </script>
+
+</body>
+</html>

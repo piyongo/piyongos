@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>Case Converter - Piyongo</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Agbalumo&family=Comic+Neue:wght@400;700&family=Courier+New&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        window.PAGE_CONFIG = { id: 'case-converter', type: 'tool', name: 'Case Converter', version: '7.0.0' };
+    </script>
+</head>
+<body class="min-h-screen bg-[#f5f5f5] text-black font-sans flex flex-col">
+
+    <script src="../js/config.js"></script>
+    <script src="../js/translations.js"></script>
+    <script src="../js/components.js"></script>
+
+    <div id="header-mount"></div>
+
+    <main id="main" class="flex-grow max-w-6xl mx-auto px-6 w-full pb-16">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-6">
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-3">
+                    <h1 class="text-3xl md:text-4xl font-bold tracking-tight" data-i18n="tools.case_title">
+                        Case Converter
+                    </h1>
+                    <button id="favBtn" class="group p-1.5 transition-transform active:scale-90 focus:outline-none">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-neutral-300 hover:text-[#FF4F00] transition-colors">
+                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </button>
+                </div>
+                <p class="text-neutral-500 font-mono text-sm md:text-base leading-relaxed max-w-xl" data-i18n="tools.case_desc">
+                    Changes text to uppercase, lowercase, or sentence case instantly.
+                </p>
+            </div>
+            <div id="coffee-btn-placeholder" class="shrink-0 w-full md:w-auto"></div>
+        </div>
+
+        <div class="group bg-white border-2 border-black rounded-[24px] md:rounded-[32px] overflow-hidden transition-all duration-300 focus-within:shadow-[4px_4px_0px_0px_#000] md:focus-within:shadow-[8px_8px_0px_0px_#000] focus-within:-translate-y-1">
+            
+            <div class="flex flex-col md:flex-row gap-4 p-4 md:p-6 bg-white border-b-2 border-black/5 transition-colors duration-200 group-focus-within:bg-neutral-50">
+                
+                <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                    <button onclick="transform('upper')" class="flex-grow md:flex-grow-0 px-4 py-2 border-2 border-neutral-200 text-neutral-600 font-bold font-mono text-xs uppercase tracking-wider rounded-xl md:rounded-2xl transition-all active:translate-y-[1px] hover:bg-white hover:text-black hover:border-black" data-i18n="ui.btn_upper">
+                        UPPERCASE
+                    </button>
+                    <button onclick="transform('lower')" class="flex-grow md:flex-grow-0 px-4 py-2 border-2 border-neutral-200 text-neutral-600 font-bold font-mono text-xs uppercase tracking-wider rounded-xl md:rounded-2xl transition-all active:translate-y-[1px] hover:bg-white hover:text-black hover:border-black" data-i18n="ui.btn_lower">
+                        LOWERCASE
+                    </button>
+                    <button onclick="transform('sentence')" class="flex-grow md:flex-grow-0 px-4 py-2 border-2 border-neutral-200 text-neutral-600 font-bold font-mono text-xs uppercase tracking-wider rounded-xl md:rounded-2xl transition-all active:translate-y-[1px] hover:bg-white hover:text-black hover:border-black" data-i18n="ui.btn_sentence">
+                        SENTENCE
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-3 ml-auto w-full md:w-auto">
+                    <button onclick="clearAll()" class="flex items-center gap-2 px-3 py-2 text-neutral-400 font-bold font-mono text-xs tracking-wider transition-colors mr-auto md:mr-0 hover:text-red-600 group/clear rounded-xl md:rounded-2xl" title="Clear All">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="transition-transform duration-300 group-hover/clear:-rotate-12"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        <span data-i18n="ui.btn_clear">CLEAR</span>
+                    </button>
+
+                    <button onclick="copyText()" class="flex-grow md:flex-grow-0 flex items-center justify-center gap-2 px-6 py-2 bg-black text-white border-2 border-black rounded-xl md:rounded-2xl hover:bg-neutral-800 active:translate-y-[1px] transition-all font-bold font-mono text-xs uppercase tracking-wider group w-full md:w-auto">
+                        <span data-i18n="ui.btn_copy">COPY RESULT</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="group-hover:-rotate-12 transition-transform duration-300"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="relative p-2 md:p-4">
+                <textarea id="inputArea" 
+                    class="w-full min-h-[350px] bg-transparent border-0 p-4 font-mono text-lg focus:ring-0 focus:outline-none resize-y placeholder:text-neutral-400 placeholder:text-base" 
+                    data-i18n-placeholder="ui.input_placeholder"
+                    placeholder="Type or paste your text here..."></textarea>
+                
+                <div id="copyOverlay" class="absolute top-10 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 transition-all duration-300 transform translate-y-4">
+                    <div class="bg-black text-white px-6 py-2 rounded-full font-bold font-mono text-sm shadow-xl flex items-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        COPIED!
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => { /* Logic */ });
+
+        const inputArea = document.getElementById('inputArea');
+
+        function transform(type) {
+            if(!inputArea.value) return;
+            if(type === 'upper') inputArea.value = inputArea.value.toUpperCase();
+            if(type === 'lower') inputArea.value = inputArea.value.toLowerCase();
+            if(type === 'sentence') {
+                inputArea.value = inputArea.value.toLowerCase().replace(/(^\s*\w|[\.\!\?]\s*\w)/g, c => c.toUpperCase());
+            }
+        }
+
+        function clearAll() { inputArea.value = ''; inputArea.focus(); }
+
+        function copyText() { 
+            if(!inputArea.value) return; 
+            navigator.clipboard.writeText(inputArea.value).then(() => { 
+                const overlay = document.getElementById('copyOverlay');
+                overlay.classList.remove('opacity-0', 'translate-y-4');
+                setTimeout(() => { overlay.classList.add('opacity-0', 'translate-y-4'); }, 1500); 
+            }); 
+        }
+    </script>
+</body>
+</html>
